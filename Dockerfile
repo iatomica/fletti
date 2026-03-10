@@ -32,4 +32,5 @@ COPY --from=builder /app/dist ./dist
 EXPOSE 8080
 
 # Start serve
-CMD ["serve", "-s", "dist", "-l", "8080"]
+#CMD ["serve", "-s", "dist", "-l", "8080"]
+CMD ["serve", "-s", "dist", "-l", "tcp://0.0.0.0:8080"]
