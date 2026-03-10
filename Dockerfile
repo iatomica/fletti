@@ -16,20 +16,20 @@ COPY . .
 # Build the Vite application
 RUN npm run build
 
-# Use a lightweight NGINX image to serve the static files
-FROM nginx:alpine
+# Production image
+FROM node:20.18.0-alpine
 
-# Copy custom nginx config if you have routing requirements (optional)
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Set working directory
+WORKDIR /app
 
-# Copy the build output from the builder stage to NGINX
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Install simple http server for serving static content
+RUN npm install -g serve
+
+# Copy the build output from the builder stage
+COPY --from=builder /app/dist ./dist
 
 # Expose port 8080
 EXPOSE 8080
 
-# Update default nginx listening port to 8080
-RUN sed -i 's/listen  *80;/listen 8080;/g' /etc/nginx/conf.d/default.conf
-
-# Start NGINX
-CMD ["nginx", "-g", "daemon off;"]
+# Start serve
+CMD ["serve", "-s", "dist", "-l", "8080"]
