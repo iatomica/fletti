@@ -25,8 +25,11 @@ FROM nginx:alpine
 # Copy the build output from the builder stage to NGINX
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Expose port 80
-EXPOSE 80
+# Expose port 8080
+EXPOSE 8080
+
+# Update default nginx listening port to 8080
+RUN sed -i 's/listen  *80;/listen 8080;/g' /etc/nginx/conf.d/default.conf
 
 # Start NGINX
 CMD ["nginx", "-g", "daemon off;"]
